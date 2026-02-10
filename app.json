@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "name": "dvm-ii",
+    "slug": "snack-a561a93f-51e8-4d3e-a5f5-11bc3baadd63",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/open-logo.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/open-logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/open-logo.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.samyakcoder.snacka561a93f51e84d3ea5f511bc3baadd63"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a7ab95e6-7e16-47fa-9343-1800ab3c9dac"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/a7ab95e6-7e16-47fa-9343-1800ab3c9dac"
+    }
+  }
+}
