@@ -51,17 +51,18 @@ const Item = ({ item, onImageLoadEnd  }) => {
   });
 
   const toDetails = (item) =>{
-    
+    console.log(item)
     setSelected(item)    
     navigation.navigate('Details')
     addSearchCache(item)
-    console.log(item)
+    
   }
 
   return (
       <TouchableOpacity style={styles.item} onPress={toggleList} activeOpacity={0.9}>
         <View style={styles.btnContainer}>
-          <View style={styles.innerBtnCtn}>
+          <View style={[styles.innerBtnCtn, expanded ?{borderBottomWidth: 1,
+  borderBottomColor: '#eee', paddingBottom: 5}: {}]}>
             <Image
               source={{
                 uri: item.cover
@@ -111,7 +112,7 @@ const Item = ({ item, onImageLoadEnd  }) => {
             <View style={{display: 'flex', alignItems: 'center', margin: 10,}}>
               <TouchableOpacity 
       style={styles.blueButton}
-      onPress={() => toDetails()}
+      onPress={() => toDetails(item)}
     >
       <Text style={styles.buttonText}>See Details</Text>
       <Text style={styles.arrow}>{'>'}</Text>
@@ -195,8 +196,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10, 
-     borderBottomWidth: 1,
-  borderBottomColor: '#eee',
+     
   },
   hiddenTxt: {
     display: 'flex',
@@ -234,24 +234,20 @@ boldTxt:{
  fontStyle: 'bold' 
 },
 blueButton: {
-    // Layout & Shape
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 10,
     paddingHorizontal: 22,
-    borderRadius: 30, // High value for that pill/capsule look
+    borderRadius: 30, 
     
-    // The "Blue One" color palette
     backgroundColor: '#3F62D7', 
 
-    // Depth/Elevation (iOS)
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
 
-    // Depth/Elevation (Android)
     elevation: 5,
     
     alignSelf: 'center',
@@ -260,13 +256,13 @@ blueButton: {
   buttonText: {
     color: '#FFFFFF',
     fontSize: 15,
-    fontWeight: '700', // Bold for better readability on blue
+    fontWeight: '700',
     letterSpacing: 0.5,
   },
   arrow: {
     color: '#FFFFFF',
     fontSize: 12,
-    marginLeft: 6, // Spacing for the '>' icon
+    marginLeft: 6, 
   }
 
 });

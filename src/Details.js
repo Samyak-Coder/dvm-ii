@@ -33,7 +33,7 @@ export default function Details() {
         } else if (data.description?.value) {
           setDescription(data.description.value);
         }
-
+        console.log(selected)
         setTitle(data.title);
       } catch (err) {
         console.log(err);
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 22,
     fontWeight: '700',
-    marginTop: 8,
+    marginTop: 15,
   },
 
   author: {
@@ -161,10 +161,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#777',
     marginBottom: 16,
+    marginTop: 5,
   },
 
   description: {
-    fontSize: 15,
+    fontSize: 17,
     lineHeight: 22,
     color: '#333',
   },

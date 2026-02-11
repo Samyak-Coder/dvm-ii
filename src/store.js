@@ -38,6 +38,8 @@ export const useSearchCache = create(
       searchCache: [],
 
       addSearchCache: (searched) => {
+        // if (!searched?.key) return;
+
         const exists = get().searchCache.some(
           (s) => s.key === searched.key
         );
@@ -49,7 +51,12 @@ export const useSearchCache = create(
         }));
       },
 
-      rmSearchCache: (searchId) =>set((state) => ({searchCache: state.searchCache.filter((item) => item.key != searchId),})),
+      rmSearchCache: (searchKey) =>
+        set((state) => ({
+          searchCache: state.searchCache.filter(
+            (item) => item.key !== searchKey
+          ),
+        })),
     }),
     {
       name: 'search-cache-storage',
@@ -57,3 +64,4 @@ export const useSearchCache = create(
     }
   )
 );
+
