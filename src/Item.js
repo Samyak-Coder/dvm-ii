@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -28,6 +28,10 @@ const Item = ({ item, onImageLoadEnd  }) => {
   const setSelected = useStore((s) => s.setSelected) 
   const addSearchCache = useSearchCache((s)=>s.addSearchCache)
 
+  useEffect(()=>{
+    let books = likedBooks.find(lbook => lbook.key === item.key)
+    if(books) setLiked(true)
+  })
 
   const handleLike = async (item, bool) => { 
     if (bool) addLikedStory(item)
@@ -189,7 +193,7 @@ const styles = StyleSheet.create({
   btnContainer: {
     overflow: 'hidden',
     borderRadius: 10,
-    boxShadow: '5px 5px 5px rgba(0,0,0,0.3)',
+    boxShadow: '3px 5px 5px rgba(0,0,0,0.1)',
     padding: 20,
   },
   innerBtnCtn: {

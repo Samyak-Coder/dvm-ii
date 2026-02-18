@@ -87,9 +87,11 @@ function Home() {
         }
       } 
       onFocus={ () =>setShowDrop(true)}
+      onBlur={()=>setShowDrop(false)}
       style={styles.textInput} 
       placeholderTextColor="black" 
       value={squery}
+      onEndEditing={()=>console.log(squery)}
       />
       {searchCache && 
       <TouchableOpacity

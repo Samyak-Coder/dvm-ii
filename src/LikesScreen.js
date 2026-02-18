@@ -11,7 +11,6 @@ import {useLike} from './store';
 export default function LikeScreen(){
 
     const likedBooks = useLike((state)=> state.likedStory)
-    console.log("likedbooskafasd:", likedBooks)
     
  return (
     <View style={styles.container}>
