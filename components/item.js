@@ -8,10 +8,9 @@ import {
   StyleSheet,
   Button
 } from 'react-native';  
-import { useNavigation } from '@react-navigation/native'
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import {useLike, useStore, useSearchCache} from './store';
-
+import {useLike, useStore, useSearchCache} from '../storage/store';
+import { router } from 'expo-router';
 
 const Item = ({ item, onImageLoadEnd  }) => {
   const [expanded, setExpanded] = useState(false);
@@ -22,8 +21,6 @@ const Item = ({ item, onImageLoadEnd  }) => {
   const addLikedStory = useLike((state)=> state.addLikedStory)
   const deslikeStory = useLike((state)=> state.dislikeStory)
   const likedBooks = useLike((state)=> state.likedStory)
-
-  const navigation = useNavigation()
 
   const setSelected = useStore((s) => s.setSelected) 
   const addSearchCache = useSearchCache((s)=>s.addSearchCache)
@@ -57,7 +54,7 @@ const Item = ({ item, onImageLoadEnd  }) => {
   const toDetails = (item) =>{
     console.log(item)
     setSelected(item)    
-    navigation.navigate('Details')
+    router.push('/details')
     addSearchCache(item)
     
   }

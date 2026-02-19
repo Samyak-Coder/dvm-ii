@@ -5,8 +5,8 @@ import {
   StyleSheet,
   Text
 } from 'react-native';
-import ItemLiked from './ItemLiked';
-import {useLike} from './store';
+import ItemLiked from '../../components/ItemLiked';
+import {useLike} from '../../storage/store';
 
 export default function LikeScreen(){
 

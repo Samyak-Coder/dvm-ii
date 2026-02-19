@@ -8,15 +8,14 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import { useStore } from './store';
+import { useStore } from '../storage/store';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 
 export default function Details() {
   const [description, setDescription] = useState('Description not available');
   const [title, setTitle] = useState('');
   const selected = useStore((s) => s.selected);
-  const navigation = useNavigation();
 
   useEffect(() => {
     if (!selected) return;
@@ -60,7 +59,7 @@ export default function Details() {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backBtn}
-          onPress={() => {navigation.goBack() }}
+          onPress={() => {router.push('/(tabs)') }}
         >
           <FontAwesome name="chevron-left" size={20} color="#fff" />
         </TouchableOpacity>

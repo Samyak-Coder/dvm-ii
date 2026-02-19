@@ -9,12 +9,12 @@ import {
   ActivityIndicator,
   TouchableOpacity
 } from 'react-native';
-import Item from './Item'
+import Item from '../../components/item'
 import debounce from "lodash/debounce";
-import { useNavigation } from '@react-navigation/native'
-import { useSearchCache, useStore } from './store';
+import { useSearchCache, useStore } from '../../storage/store';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { router } from 'expo-router';
 
 function Home() {
   
@@ -28,8 +28,6 @@ function Home() {
   const searchCache = useSearchCache((state)=>state.searchCache)
   const setSelected = useStore((s) => s.setSelected) 
   const removeFromCache = useSearchCache((s)=>s.rmSearchCache)
-
-  const navigation = useNavigation()
 
 //   useEffect(() => {
 //   if (expectedImages > 0 && loadedImages >= expectedImages) {
@@ -62,12 +60,12 @@ function Home() {
       }
   }
 
-  const debouncedFunction = useCallback(debounce(fetchBooks, 600), [])
-
+  const debouncedFunction = useCallback(debounce(fetchBooks, 600), []);
+  
   const handleDropBtn = (item) =>{
     setSquery(item.title)
     setSelected(item)
-    navigation.navigate('Details')
+    router.push('/details')
   }
 
   return (
@@ -91,7 +89,7 @@ function Home() {
       style={styles.textInput} 
       placeholderTextColor="black" 
       value={squery}
-      onEndEditing={()=>console.log(squery)}
+      // onEndEditing={()=>console.log(squery)}
       />
       {searchCache && 
       <TouchableOpacity
@@ -105,6 +103,7 @@ function Home() {
         <View style = {styles.dropCont} >
           <FlatList 
             data={searchCache}
+            keyboardShouldPersistTaps="handled"
             keyExtractor={(item) => item.key}
             renderItem={({item, index})=>(
               <View style={[styles.cacheCont, index !== searchCache.length - 1 && styles.separator ]}>
