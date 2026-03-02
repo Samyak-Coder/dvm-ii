@@ -47,7 +47,8 @@ export const useSearchCache = create(
         if (exists) return;
 
         set((state) => ({
-          searchCache: [...state.searchCache, searched],
+          searchCache: [searched, ...state.searchCache]
+          
         }));
       },
 
@@ -64,4 +65,3 @@ export const useSearchCache = create(
     }
   )
 );
-

@@ -3,6 +3,7 @@
     "name": "dvm-ii",
     "slug": "snack-a561a93f-51e8-4d3e-a5f5-11bc3baadd63",
     "version": "1.0.0",
+    "scheme": "dvm-2-main-app",
     "orientation": "portrait",
     "icon": "./assets/open-logo.png",
     "userInterfaceStyle": "light",

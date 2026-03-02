@@ -7,7 +7,10 @@ import {
   TextInput,
   Text,
   ActivityIndicator,
-  TouchableOpacity
+  TouchableOpacity,
+  Pressable,
+  Keyboard,
+  ScrollView
 } from 'react-native';
 import Item from '../../components/item'
 import debounce from "lodash/debounce";
@@ -15,30 +18,39 @@ import { useSearchCache, useStore } from '../../storage/store';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { router } from 'expo-router';
+import { RFValue } from "react-native-responsive-fontsize";
 
 function Home() {
   
   const [booksList, setBooksList] = useState([])
-  // const [expectedImages, setExpectedImages] = useState(0);
-  // const [loadedImages, setLoadedImages] = useState(0);
-  // const [imagesReady, setImagesReady] = useState(true);
   const [squery, setSquery] = useState('')
   const [showDrop, setShowDrop] = useState(false)
+  const [numFetch, setNumFetch] = useState(0)
+
 
   const searchCache = useSearchCache((state)=>state.searchCache)
-  const setSelected = useStore((s) => s.setSelected) 
+  // const setSelected = useStore((s) => s.setSelected) 
   const removeFromCache = useSearchCache((s)=>s.rmSearchCache)
+  const addSearchCache = useSearchCache((s)=>s.addSearchCache)
 
-//   useEffect(() => {
-//   if (expectedImages > 0 && loadedImages >= expectedImages) {
-//     setImagesReady(true);
-//   }
-// }, [loadedImages, expectedImages]);
+  const [loadedImages, setLoadedImages] = useState(0);
+  const [imagesReady, setImagesReady] = useState(true);
+
+  useEffect(() => {
+  if (loadedImages >= numFetch) {
+    setImagesReady(true);
+  }else{
+    console.log("heha", loadedImages)
+  }
+}, [loadedImages, numFetch]);
+
    
   const fetchBooks = async(name)=>{
     try{
-        const response = await axios.get(`https://openlibrary.org/search.json?q=${name}`)
+        setImagesReady(false);
+        setLoadedImages(0);
 
+        const response = await axios.get(`https://openlibrary.org/search.json?q=${name}`)
         const data1 = response.data.docs
         
         const top10 = data1.slice(0,10).map(item=>({
@@ -49,106 +61,139 @@ function Home() {
           cover: item.cover_edition_key,
         }))
 
-        const imageCount = top10.filter(item => item.cover).length;
+        setNumFetch(top10.length)
 
         setBooksList(top10)
-        // setExpectedImages(imageCount);
-        // setLoadedImages(0);
-        // setImagesReady(imageCount === 0)
+        console.log(searchCache)
+        addSearchCache({
+          key: name,
+          value: name
+        })
+
       } catch(err){
         console.log(`Error: ${err}`)
       }
   }
 
   const debouncedFunction = useCallback(debounce(fetchBooks, 600), []);
-  
+
   const handleDropBtn = (item) =>{
-    setSquery(item.title)
-    setSelected(item)
-    router.push('/details')
+    setSquery(item.value)
+    fetchBooks(item.value)
+    console.log("ts")
   }
 
   return (
     <View style={styles.container}>
+      
     <View style={styles.header}>
         <Text style={styles.headerTitle}>Home</Text>
     </View>
-    <View style={styles.TextIncontainer} >
-    <View style={styles.TIWrapper}>
-      <View style ={styles.tiContainer} >
-      <TextInput 
-      placeholder='Search using OpenLibrary...' 
-      onChangeText={(e)=>{
-        setSquery(e)
-        debouncedFunction(e)
-        setShowDrop(e.length == 0)
-        }
-      } 
-      onFocus={ () =>setShowDrop(true)}
-      onBlur={()=>setShowDrop(false)}
-      style={styles.textInput} 
-      placeholderTextColor="black" 
-      value={squery}
-      // onEndEditing={()=>console.log(squery)}
-      />
-      {searchCache && 
-      <TouchableOpacity
-      onPress={ ()=> setShowDrop(!showDrop)}
-      >
-        <FontAwesome name="level-down" size={24} color="black" style={{paddingHorizontal: 10 }} />
-    </TouchableOpacity> 
-    }
-      </View>
-      {showDrop && (
-        <View style = {styles.dropCont} >
-          <FlatList 
-            data={searchCache}
-            keyboardShouldPersistTaps="handled"
-            keyExtractor={(item) => item.key}
-            renderItem={({item, index})=>(
-              <View style={[styles.cacheCont, index !== searchCache.length - 1 && styles.separator ]}>
-                <TouchableOpacity
-                  style={styles.dropItem}
-                  onPress={() => handleDropBtn(item)}
-                  activeOpacity={0.7}
-                >
-                  <Text style={styles.dropText}>
-                    {item.title}
-                  </Text>
-                </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={styles.closeBtn}
-                  onPress={() => removeFromCache(item.key)}
-                >
-                  <MaterialIcons name="cancel" size={18} color="#444" />
-                </TouchableOpacity>
-            </View>
+    <Pressable onPress={(e)=>{setShowDrop(false), Keyboard.dismiss(), console.log("tf"), e.stopPropagation()}} >
 
-        )}
-          />
+      <View style={styles.TextIncontainer} >
+      <View style={styles.TIWrapper}>
+
+        <View style ={styles.tiContainer} >
+          
+            <TextInput 
+            placeholder='Search using OpenLibrary...' 
+            onChangeText={(e)=>{
+              setSquery(e)
+              debouncedFunction(e)
+              setShowDrop(e.length == 0)
+              }
+            } 
+            onFocus={ () =>setShowDrop(true)}
+            onBlur={()=>{setShowDrop(false), console.log("blurred")}}
+            style={styles.textInput} 
+            placeholderTextColor="black" 
+            value={squery}
+            />
+            <TouchableOpacity style={styles.cancelBtn}
+            onPress={()=>{
+                      setSquery("")
+                      setBooksList()
+                    }}
+            >
+              
+              <MaterialIcons name="cancel" size={23} color="black" />
+            </TouchableOpacity>
+          
+            {searchCache && 
+              <TouchableOpacity
+              onPress={ ()=> setShowDrop(!showDrop)}
+              >
+                <FontAwesome name="level-down" size={24} color="black" style={{paddingHorizontal: 10 }} />
+              </TouchableOpacity> 
+            }
+        
         </View>
-      )}
-      </View>
-      <FlatList
-        data={booksList}
-        renderItem={({item})=><Item item={item} />
-        }
-        keyExtractor={(item) => item.key}
-        removeClippedSubviews = {true}
-        contentContainerStyle={{
-          paddingBottom: 100,
-        }}
-        onImageLoadEnd={() =>
-        setLoadedImages(prev => prev + 1)
-      }
-      />
-    </View>
-    {/* {!imagesReady && (
+        {showDrop && (
+          <View style = {styles.dropCont} 
+          onLayout={console.log(imagesReady, "hello")}
+          >
+            <FlatList 
+              data={searchCache}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+              keyExtractor={(item) => item.key}
+              renderItem={({item, index})=>(
+                
+                <View style={[styles.cacheCont, index !== searchCache.length - 1 && styles.separator ]}>   
+                <TouchableOpacity
+                    style={styles.dropItem}
+                    onPress={() => handleDropBtn(item)}
+                    activeOpacity={0.7}
+                >
+                    <Text style={styles.dropText}>
+                      {item.value}
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.closeBtn}
+                    onPress={() => removeFromCache(item.key)}
+                  >
+                    <MaterialIcons name="cancel" size={18} color="#444" />
+                  </TouchableOpacity>
+              </View>
+
+          )}
+            />
+          </View>
+        )}
+        </View>
+
+
+        <View style={{ backgroundColor: '#f2f2f7', paddingBottom: 100}} >
+        {booksList && <ScrollView
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled" 
+          contentContainerStyle={{
+            backgroundColor: '#f2f2f7',
+            paddingBottom: 100,
+          }}
+        >
+           {booksList.map((item) => (
+            <View key={item.key} >
+          <Item item={item} onImageLoadEnd={() =>
+              setLoadedImages(prev => prev + 1)
+          }/>
+          </View>
+          ))}
+          
+        </ScrollView>}
+        </View>
+        
+        </View>
+    </Pressable>
+    {!imagesReady && (
   <View style={styles.loaderOverlay}>
     <ActivityIndicator size="large" color="#2F49D1" />
   </View>
-)} */}
+)}
     </View>
   );
 }
@@ -157,18 +202,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 0,
-    backgroundColor: '#f9fafb',
-    
+    backgroundColor: '#f2f2f7',
   },  
-  // loaderOverlay: {
-  // ...StyleSheet.absoluteFillObject,
-  // backgroundColor: "rgba(255,255,255,0.9)",
-  // justifyContent: "center",
-  // alignItems: "center",
-  // zIndex: 100,
-  // },  
+  loaderOverlay: {
+   ...StyleSheet.absoluteFillObject,
+  backgroundColor: "rgba(255,255,255,0.9)",
+  justifyContent: "center",
+  alignItems: "center",
+  zIndex: 100,
+  },  
   TextIncontainer: {
-    backgroundColor: "#fff",
+    backgroundColor: '#f2f2f7',
     marginTop: -50,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
@@ -198,6 +242,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     display: 'flex',
     justifyContent: 'center',
+    alignSelf: 'center',
     alignItems: 'center',
     marginTop: 40,
     marginBottom: 10,
@@ -211,14 +256,20 @@ const styles = StyleSheet.create({
     padding: 10,
     color: 'black'
   },
+  cancelBtn: {
+    position: 'absolute',
+    right: RFValue(35),
+    top: '50%',
+    transform: [{ translateY: -12 }],
+  },
   dropCont: {
     position: 'absolute',
     top: 55,
     width: '90%',
-    backgroundColor: '#fff',
+    backgroundColor: '#f2f2f7',
     borderRadius: 12,
     maxHeight: 220,
-    zIndex: 1000,
+    zIndex: 200,
     elevation: 10,
 
     shadowColor: '#000',
@@ -246,6 +297,7 @@ const styles = StyleSheet.create({
   cacheCont: {
     flexDirection: 'row',
     alignItems: 'flex-start',
+    zIndex: 10
   },
 
   separator:{

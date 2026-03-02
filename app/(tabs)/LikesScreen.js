@@ -20,10 +20,16 @@ export default function LikeScreen(){
     <View style={styles.TextIncontainer} >
       <FlatList
         data={likedBooks}
+        style={{flex: 1}}
+        contentContainerStyle={{
+          margin: 0,
+          paddingBottom: 100,
+           backgroundColor: '#f2f2f7',
+        }}
+        showsVerticalScrollIndicator={false}
         renderItem={({item})=><ItemLiked item={item} />
         }
         keyExtractor={(item) => item.key}
-        removeClippedSubviews = {true}
       />
     </View>
     </View>
@@ -34,11 +40,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 0,
-    backgroundColor: '#f9fafb',
+     backgroundColor: '#f2f2f7',
     
   },  
   TextIncontainer: {
-    backgroundColor: "#fff",
+     backgroundColor: '#f2f2f7',
     marginTop: -50,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
@@ -57,6 +63,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#c83333",
     paddingTop: 60,
     alignItems: "center",
+    
   },
   headerTitle: {
     color: "#fff",

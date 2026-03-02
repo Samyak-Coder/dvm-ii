@@ -188,6 +188,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     boxShadow: '5px 5px 5px rgba(0,0,0,0.3)',
     padding: 20,
+    backgroundColor: '#fafafa',
   },
   innerBtnCtn: {
     flexDirection: 'row',

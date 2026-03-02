@@ -9,10 +9,10 @@ import {
   Button
 } from 'react-native';  
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import {useLike, useStore, useSearchCache} from '../storage/store';
+import {useLike, useStore, useSearchCache, } from '../storage/store';
 import { router } from 'expo-router';
 
-const Item = ({ item, onImageLoadEnd  }) => {
+const Item = ({ item, onImageLoadEnd }) => {
   const [expanded, setExpanded] = useState(false);
   const [liked, setLiked] = useState(false)
   const anim = useRef(new Animated.Value(0)).current;
@@ -23,7 +23,8 @@ const Item = ({ item, onImageLoadEnd  }) => {
   const likedBooks = useLike((state)=> state.likedStory)
 
   const setSelected = useStore((s) => s.setSelected) 
-  const addSearchCache = useSearchCache((s)=>s.addSearchCache)
+  // const addSearchCache = useSearchCache((s)=>s.addSearchCache)
+
 
   useEffect(()=>{
     let books = likedBooks.find(lbook => lbook.key === item.key)
@@ -33,7 +34,6 @@ const Item = ({ item, onImageLoadEnd  }) => {
   const handleLike = async (item, bool) => { 
     if (bool) addLikedStory(item)
       else deslikeStory(item.key)
-    console.log(bool)
   }
 
   const toggleList = () => {
@@ -55,7 +55,7 @@ const Item = ({ item, onImageLoadEnd  }) => {
     console.log(item)
     setSelected(item)    
     router.push('/details')
-    addSearchCache(item)
+    // addSearchCache(item)
     
   }
 
@@ -179,6 +179,7 @@ export default Item;
 const styles = StyleSheet.create({
   item: {
     margin: 10,
+    
   },
   title: {
     display: 'flex',
@@ -192,6 +193,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     boxShadow: '3px 5px 5px rgba(0,0,0,0.1)',
     padding: 20,
+    backgroundColor: '#fafafa',
   },
   innerBtnCtn: {
     flexDirection: 'row',
