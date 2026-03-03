@@ -58,6 +58,8 @@ export const useSearchCache = create(
             (item) => item.key !== searchKey
           ),
         })),
+
+      resetCache: ()=> set({searchCache: []}),
     }),
     {
       name: 'search-cache-storage',

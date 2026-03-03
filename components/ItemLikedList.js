@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -9,12 +9,12 @@ import {
   Button
 } from 'react-native';  
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import {useLike, useStore, useSearchCache, } from '../storage/store';
+import {useLike, useStore, useSearchCache} from '../storage/store';
 import { router } from 'expo-router';
 
-const Item = ({ item, onImageLoadEnd }) => {
+const ItemLikedList = ({ item, onImageLoadEnd  }) => {
   const [expanded, setExpanded] = useState(false);
-  const [liked, setLiked] = useState(false)
+  const [liked, setLiked] = useState(true)
   const anim = useRef(new Animated.Value(0)).current;
   const [contentHeight, setContentHeight] = useState(0);
 
@@ -23,17 +23,13 @@ const Item = ({ item, onImageLoadEnd }) => {
   const likedBooks = useLike((state)=> state.likedStory)
 
   const setSelected = useStore((s) => s.setSelected) 
-  // const addSearchCache = useSearchCache((s)=>s.addSearchCache)
+  const addSearchCache = useSearchCache((s)=>s.addSearchCache)
 
-
-  useEffect(()=>{
-    let books = likedBooks.find(lbook => lbook.key === item.key)
-    if(books) setLiked(true)
-  })
 
   const handleLike = async (item, bool) => { 
     if (bool) addLikedStory(item)
       else deslikeStory(item.key)
+    console.log(bool)
   }
 
   const toggleList = () => {
@@ -55,7 +51,7 @@ const Item = ({ item, onImageLoadEnd }) => {
     console.log(item)
     setSelected(item)    
     router.push('/details')
-    // addSearchCache(item)
+    addSearchCache(item)
     
   }
 
@@ -93,7 +89,7 @@ const Item = ({ item, onImageLoadEnd }) => {
             >
             <View style={styles.metaRow}>
               <View style={styles.metaText}>
-                <Text style={styles.meta}><Text style ={{fontWeight: 'bold'}}>Author:</Text> {item.author.join(',')}</Text>
+                <Text style={styles.meta}><Text style ={{fontWeight: 'bold'}}>Author:</Text> {item.author}</Text>
                 <Text style={styles.meta}><Text style ={{fontWeight: 'bold'}}>Publish Year:</Text> {item.publish_year}</Text>
               </View>
 
@@ -174,12 +170,11 @@ const Item = ({ item, onImageLoadEnd }) => {
   );
 };
 
-export default Item;
+export default ItemLikedList;
 
 const styles = StyleSheet.create({
   item: {
-    margin: 20,
-    
+    margin: 10,
   },
   title: {
     display: 'flex',
@@ -191,7 +186,7 @@ const styles = StyleSheet.create({
   btnContainer: {
     overflow: 'hidden',
     borderRadius: 10,
-    boxShadow: '3px 5px 5px rgba(0,0,0,0.1)',
+    boxShadow: '5px 5px 5px rgba(0,0,0,0.3)',
     padding: 20,
     backgroundColor: '#fafafa',
   },
@@ -214,7 +209,7 @@ const styles = StyleSheet.create({
   flexDirection: "row",
   alignItems: "flex-start",
   paddingBottom: 5,
-   borderBottomWidth: 1,
+   borderBottom: 1,
   borderBottomColor: '#eee',
 },
 
@@ -243,13 +238,14 @@ blueButton: {
     paddingVertical: 10,
     paddingHorizontal: 22,
     borderRadius: 30, 
-    
+
     backgroundColor: '#3F62D7', 
 
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
+
 
     elevation: 5,
     
@@ -259,7 +255,7 @@ blueButton: {
   buttonText: {
     color: '#FFFFFF',
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: '700', 
     letterSpacing: 0.5,
   },
   arrow: {

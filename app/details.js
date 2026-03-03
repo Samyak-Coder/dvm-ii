@@ -59,7 +59,7 @@ export default function Details() {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backBtn}
-          onPress={() => {router.push('/(tabs)') }}
+          onPress={() => {router.back() }}
         >
           <FontAwesome name="chevron-left" size={20} color="#fff" />
         </TouchableOpacity>
