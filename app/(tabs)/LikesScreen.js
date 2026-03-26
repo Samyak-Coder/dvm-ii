@@ -11,6 +11,7 @@ import ItemLikedList from '../../components/ItemLikedList';
 import {useLike} from '../../storage/store';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+
 export default function LikeScreen(){
 
     const likedBooks = useLike((state)=> state.likedStory)
@@ -43,9 +44,10 @@ export default function LikeScreen(){
         data={likedBooks}
         style={{flex: 1}}
         contentContainerStyle={{
-          margin: 0,
+          // margin: 0,
           paddingBottom: 100,
-           backgroundColor: '#f2f2f7',
+          backgroundColor: '#f2f2f7',
+          justifyContent: 'space-between'
         }}
         showsVerticalScrollIndicator={false}
         numColumns={2}
@@ -89,7 +91,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 30,
     padding: 20,
     zIndex: 10,
-
     shadowColor: "#000",
     shadowOffset: { width: 0, height: -4 },
     shadowOpacity: 0.1,

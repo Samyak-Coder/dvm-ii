@@ -9,7 +9,7 @@ import {
   Button
 } from 'react-native';  
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import {useLike, useStore, useSearchCache, } from '../storage/store';
+import {useLike, useStore } from '../storage/store';
 import { router } from 'expo-router';
 
 const Item = ({ item, onImageLoadEnd }) => {
@@ -23,8 +23,6 @@ const Item = ({ item, onImageLoadEnd }) => {
   const likedBooks = useLike((state)=> state.likedStory)
 
   const setSelected = useStore((s) => s.setSelected) 
-  // const addSearchCache = useSearchCache((s)=>s.addSearchCache)
-
 
   useEffect(()=>{
     let books = likedBooks.find(lbook => lbook.key === item.key)
@@ -53,10 +51,8 @@ const Item = ({ item, onImageLoadEnd }) => {
 
   const toDetails = (item) =>{
     console.log(item)
-    setSelected(item)    
-    router.push('/details')
-    // addSearchCache(item)
-    
+    setSelected(item)
+    router.push('/details')    
   }
 
   return (
@@ -74,7 +70,9 @@ const Item = ({ item, onImageLoadEnd }) => {
               onError={onImageLoadEnd}
               style={{ width: 60, height: 90, borderRadius: 5 }}
             />
-            <Text style={styles.title}>{item.title}</Text>
+            <Text style={styles.title}
+            numberOfLines={2}
+            >{item.title}</Text>
           </View>
 
           <Animated.View
@@ -179,7 +177,6 @@ export default Item;
 const styles = StyleSheet.create({
   item: {
     margin: 20,
-    
   },
   title: {
     display: 'flex',
@@ -217,18 +214,15 @@ const styles = StyleSheet.create({
    borderBottomWidth: 1,
   borderBottomColor: '#eee',
 },
-
 metaText: {
   flex: 1,              
   paddingRight: 8, 
   paddingTop: 10,     
 },
-
 meta: {
   fontSize: 17,
   flexWrap: "wrap",    
 },
-
 heartBtn: {
   padding: 10,
   flexShrink: 0,        
@@ -243,16 +237,12 @@ blueButton: {
     paddingVertical: 10,
     paddingHorizontal: 22,
     borderRadius: 30, 
-    
     backgroundColor: '#3F62D7', 
-
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-
     elevation: 5,
-    
     alignSelf: 'center',
     marginTop: 10,
   },
@@ -267,5 +257,4 @@ blueButton: {
     fontSize: 12,
     marginLeft: 6, 
   }
-
 });

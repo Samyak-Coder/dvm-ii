@@ -15,7 +15,7 @@ import { RFValue } from "react-native-responsive-fontsize";
 
 const ItemGrid = ({ item, onImageLoadEnd  }) => {
   const [expanded, setExpanded] = useState(false);
-  const [liked, setLiked] = useState(true)
+  const [liked, setLiked] = useState(false)
   const anim = useRef(new Animated.Value(0)).current;
   const [contentHeight, setContentHeight] = useState(0);
 
@@ -24,7 +24,9 @@ const ItemGrid = ({ item, onImageLoadEnd  }) => {
   const likedBooks = useLike((state)=> state.likedStory)
 
   const setSelected = useStore((s) => s.setSelected) 
+  const addSearchCache = useSearchCache((s)=>s.addSearchCache)
 
+  // console.log("adsfasf", item)
 
   const handleLike = async (item, bool) => { 
     if (bool) addLikedStory(item)
@@ -45,7 +47,9 @@ const ItemGrid = ({ item, onImageLoadEnd  }) => {
   const toDetails = (item) =>{
     console.log(item)
     setSelected(item)    
-    router.push('/details')    
+    router.push('/details')
+    addSearchCache(item)
+    
   }
 
   return (
@@ -101,7 +105,6 @@ export default ItemGrid;
 const styles = StyleSheet.create({
   cardWrapper: {   
     marginBottom: 30,
-    width: '48%'
   },
 
   title: {

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect} from 'react';
 import axios from 'axios';
 import {
   View,
@@ -13,21 +13,22 @@ import {
   ScrollView
 } from 'react-native';
 import Item from '../../components/item'
-import debounce from "lodash/debounce";
-import { useSearchCache, useStore } from '../../storage/store';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+// import debounce from "lodash/debounce";
+import { useSearchCache } from '../../storage/store';
+import ItemGrid from '../../components/itemGrid'
 import Feather from '@expo/vector-icons/Feather';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { router } from 'expo-router';
 import { RFValue } from "react-native-responsive-fontsize";
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 function Home() {
-  
+
   const [booksList, setBooksList] = useState([])
   const [squery, setSquery] = useState('')
   const [showDrop, setShowDrop] = useState(true)
   const [numFetch, setNumFetch] = useState(0)
-
+  const[grid, setGrid] = useState(false)
+  const[list, setList] = useState(true)
 
   const searchCache = useSearchCache((state)=>state.searchCache)
   // const setSelected = useStore((s) => s.setSelected) 
@@ -39,13 +40,24 @@ function Home() {
   const [imagesReady, setImagesReady] = useState(true);
 
   useEffect(() => {
-  if (loadedImages >= numFetch-1) {
+  if (loadedImages >= numFetch-2 && numFetch > 0) {
     setImagesReady(true);
   }else{
     console.log("heha", loadedImages)
   }
 }, [loadedImages, numFetch]);
 
+useEffect(()=>{
+  const delay = setTimeout(()=>{
+    if(squery.length > 0){
+      fetchBooks(squery);
+      console.log("Fetch")
+    }
+  }, 600)
+
+  return ()=> clearTimeout(delay) //cleanup
+
+}, [squery])
    
   const fetchBooks = async(name)=>{
     try{
@@ -54,7 +66,7 @@ function Home() {
 
         const response = await axios.get(`https://openlibrary.org/search.json?q=${name}`)
         const data1 = response.data.docs
-        
+        // console.log(data1)
         const top10 = data1.slice(0,10).map(item=>({
           key: item.key,
           title: item.title,
@@ -66,23 +78,26 @@ function Home() {
         setNumFetch(top10.length)
         setShowDrop(false)
         setBooksList(top10)
-        console.log(searchCache)
-        addSearchCache({
-          key: name,
-          value: name
-        })
+        console.log("Search cache", searchCache)
+
+        if (!searchCache.find(item => item.key === name)) {
+          addSearchCache({
+            key: name,
+            value: name
+          })
+        }
 
       } catch(err){
         console.log(`Error: ${err}`)
       }
   }
 
-  const debouncedFunction = useCallback(debounce(fetchBooks, 600), []);
+  // const debouncedFunction = useCallback(debounce(fetchBooks, 600), []);
 
   const handleDropBtn = (item) =>{
     setSquery(item.value)
     fetchBooks(item.value)
-    console.log("ts")
+    // console.log("ts")
   }
 
   return (
@@ -104,7 +119,6 @@ function Home() {
             placeholder='Search using OpenLibrary...' 
             onChangeText={(e)=>{
               setSquery(e)
-              debouncedFunction(e)
               setShowDrop(!(e.length == 0))
               }
             } 
@@ -115,7 +129,7 @@ function Home() {
             <TouchableOpacity style={styles.cancelBtn}
             onPress={()=>{
                       setSquery("")
-                      setBooksList()
+                      setBooksList([])
                       setShowDrop(true)
                     }}
             >
@@ -141,7 +155,7 @@ function Home() {
             </View>
             <View style = {styles.dropItemCont}>
             <FlatList 
-              data={searchCache}
+              data={searchCache.filter(e => e.value !== " ")}
               showsVerticalScrollIndicator={false}
               keyboardShouldPersistTaps="handled"
               keyExtractor={(item) => item.key}
@@ -174,34 +188,74 @@ function Home() {
          )} 
         </View>
 
-
-        <View style={{ backgroundColor: '#fff', paddingBottom: 100, marginTop: 10}} >
-        {booksList && <ScrollView
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled" 
-          contentContainerStyle={{
-            backgroundColor: '#fff',
-            paddingBottom: 350,
-          }}
-        >
-           {booksList.map((item) => (
-            <View key={item.key} >
-          <Item item={item} onImageLoadEnd={() =>
-              setLoadedImages(prev => prev + 1)
-          }/>
-          </View>
-          ))}
-          
-        </ScrollView>}
-        </View>
-        
-        </View>
-    </Pressable>
-    {!imagesReady && (
+         {!imagesReady && (
   <View style={styles.loaderOverlay}>
     <ActivityIndicator size="large" color="#2F49D1" />
   </View> 
 )}
+      {!showDrop &&(
+        <View style={styles.viewOptions} >
+        <TouchableOpacity onPress={()=>{setGrid(true), setList(false)}} >
+          <Ionicons name="grid" size={24} color="black" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={()=>{setList(true), setGrid(false)}} >
+          <Ionicons name="list-outline" size={24} color="black" />
+         </TouchableOpacity>
+      </View>
+      )}
+        <View style={{ backgroundColor: '#fff', paddingBottom: 100, marginTop: 10}} >
+        {booksList && list && 
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled" 
+          contentContainerStyle={{
+            backgroundColor: '#fff',
+            paddingBottom: 550,
+          }}
+        >
+           {booksList.map((item) => (
+
+          <Item key={item.key} item={item} onImageLoadEnd={() =>
+              setLoadedImages(prev => prev + 1)
+          }/>
+
+          ))}
+          
+        </ScrollView>}
+        {booksList && grid && (
+          <ScrollView
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{
+            backgroundColor: '#fff',
+            paddingBottom: 550,
+            marginHorizontal: 25
+          }}
+        >
+          <View
+          style={{
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+            flexGrow: 1,
+            
+          }}
+          >
+           {booksList.map((item) => (
+             <View key={item.key} style={{ width: '48%' }}>
+          <ItemGrid item={item} onImageLoadEnd={() =>
+              setLoadedImages(prev => prev + 1)
+          }/>
+          </View>
+          ))}
+          </View>
+        </ScrollView>
+        )}
+        </View>
+        
+        </View>
+    </Pressable>
+    
     </View>
   );
 }
@@ -212,8 +266,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },  
   loaderOverlay: {
-   ...StyleSheet.absoluteFillObject,
-  backgroundColor: "rgba(255,255,255,0.9)",
+  display: 'flex',
   justifyContent: "center",
   alignItems: "center",
   zIndex: 100,
@@ -263,7 +316,6 @@ const styles = StyleSheet.create({
     flexDirection: 'comlumn',
     borderRadius: 12,
     marginTop: 25,
-    // width: "100%",
    alignSelf: 'stretch',
   },
   dropHeader:{
@@ -281,6 +333,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#4b61a4',
     fontWeight: 500
+  },
+  viewOptions:{
+    display: 'flex',
+    flexDirection:'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    margin: 10, 
+    marginBottom: 25,
+    gap: 10,
+    backgroundColor: '#eaecf4',
+    padding: 10,
+    width: '25%',
+    borderRadius: 15,
   },
   dropItemCont: {
     display: 'flex',
@@ -310,8 +375,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 5,
   },
-
-
 
   closeBtn: {
     marginRight: 10,

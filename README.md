@@ -7,13 +7,8 @@ Switched to expo-router and created a new branch named 'router'.
 The branch is then merged with the main branch.
 Both the apk's are then released.
 
-Things to do:
-1. ActivityIndicator
-2. Grid and search query saved
-3. flip search chronology
-4. dark mode
-5. touchable to fix onBlur //already fixed ig
-6. Error screen
-7. Splash Screen
-8. App Icon
-9. expoSQLite
+
+
+
+
+this app uses vector icons, which is stuck on some angular 13 issue, which can lead to XSS attacks and shi, so it would be better to use other icon packs like ng-icons/core.

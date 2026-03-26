@@ -29,7 +29,7 @@ export default function Details() {
 
         if (typeof data.description === 'string') {
           setDescription(data.description);
-        } else if (data.description?.value) {
+        } else if (data.description?.value) { //?'s sick
           setDescription(data.description.value);
         }
         console.log(selected)
@@ -52,32 +52,31 @@ export default function Details() {
 
   return (
     <View style={styles.container}>
-       <ScrollView
+      <ScrollView
         contentContainerStyle={styles.scroll}
         showsVerticalScrollIndicator={false}
       >
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backBtn}
-          onPress={() => {router.back() }}
-        >
-          <FontAwesome name="chevron-left" size={20} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Book Details</Text>
-      </View>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backBtn}
+            onPress={() => { router.back() }}
+          >
+            <FontAwesome name="chevron-left" size={20} color="#fff" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Book Details</Text>
+        </View>
 
-     
-      <View style={styles.floatingImage}>
-        <Image
-          source={{
-            uri: selected.cover
-              ? `https://covers.openlibrary.org/b/olid/${selected.cover}-M.jpg`
-              : 'https://placehold.co/180x270.png',
-          }}
-          style={styles.image}
-        />
-      </View>
-      
+
+        <View style={styles.floatingImage}>
+          <Image
+            source={{
+              uri: selected.cover
+                ? `https://covers.openlibrary.org/b/olid/${selected.cover}-M.jpg`
+                : 'https://placehold.co/180x270.png',
+            }}
+            style={styles.image}
+          />
+        </View>
         <View style={styles.card}>
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.author}>{selected.author}</Text>
@@ -100,9 +99,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 30,
     paddingTop: 60,
     alignItems: 'center',
-
   },
-
   headerTitle: {
     color: '#fff',
     fontSize: 20,
