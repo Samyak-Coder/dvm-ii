@@ -9,7 +9,7 @@ import {
   Button
 } from 'react-native';  
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import {useLike, useStore, useSearchCache} from '../storage/store';
+import {useLike, useStore} from '../storage/store';
 import { router } from 'expo-router';
 import { RFValue } from "react-native-responsive-fontsize";
 
@@ -24,7 +24,6 @@ const ItemGrid = ({ item, onImageLoadEnd  }) => {
   const likedBooks = useLike((state)=> state.likedStory)
 
   const setSelected = useStore((s) => s.setSelected) 
-  const addSearchCache = useSearchCache((s)=>s.addSearchCache)
 
   // console.log("adsfasf", item)
 
@@ -48,8 +47,6 @@ const ItemGrid = ({ item, onImageLoadEnd  }) => {
     console.log(item)
     setSelected(item)    
     router.push('/details')
-    addSearchCache(item)
-    
   }
 
   return (

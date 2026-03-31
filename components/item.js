@@ -91,7 +91,7 @@ const Item = ({ item, onImageLoadEnd }) => {
             >
             <View style={styles.metaRow}>
               <View style={styles.metaText}>
-                <Text style={styles.meta}><Text style ={{fontWeight: 'bold'}}>Author:</Text> {item.author.join(',')}</Text>
+                <Text style={styles.meta}><Text style ={{fontWeight: 'bold'}}>Author:</Text> {item.author}</Text>
                 <Text style={styles.meta}><Text style ={{fontWeight: 'bold'}}>Publish Year:</Text> {item.publish_year}</Text>
               </View>
 

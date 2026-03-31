@@ -18,6 +18,13 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="search"
+        options={{
+          title: 'Search',
+          tabBarIcon: ({ color }) => <FontAwesome size={24} name="search" color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="LikesScreen"
         options={{
           title: 'Likes',

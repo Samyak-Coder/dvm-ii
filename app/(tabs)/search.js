@@ -21,7 +21,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { RFValue } from "react-native-responsive-fontsize";
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-function Home() {
+function Search() {
 
   const [booksList, setBooksList] = useState([])
   const [squery, setSquery] = useState('')
@@ -42,9 +42,6 @@ function Home() {
   const isManualSearch = useRef(false);
 
   useEffect(() => {
-
-    
-
   if (loadedImages >= numFetch-2 && numFetch > 0) {
     setImagesReady(true);
   }else{
@@ -114,7 +111,7 @@ useEffect(()=>{
     <View style={styles.container}>
       
     <View style={styles.header}>
-        <Text style={styles.headerTitle}>asldfj</Text>
+        <Text style={styles.headerTitle}>Search</Text>
         <MaterialIcons name="account-circle" size={35} color="#0834d5" />
     </View>
 
@@ -396,4 +393,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default Home;
+export default Search;
