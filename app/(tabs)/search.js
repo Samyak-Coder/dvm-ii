@@ -78,7 +78,7 @@ useEffect(()=>{
           title: item.title,
           author: item.author_name ? item.author_name : 'N/A',
           publish_year: item.first_publish_year,
-          cover: item.cover_edition_key,
+          cover: item.cover_edition_key|| item.cover_id,
         }))
 
         setNumFetch(top10.length)

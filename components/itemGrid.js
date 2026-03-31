@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,8 @@ import { router } from 'expo-router';
 import { RFValue } from "react-native-responsive-fontsize";
 
 const ItemGrid = ({ item, onImageLoadEnd  }) => {
+
+
   const [expanded, setExpanded] = useState(false);
   const [liked, setLiked] = useState(false)
   const anim = useRef(new Animated.Value(0)).current;
@@ -25,7 +27,10 @@ const ItemGrid = ({ item, onImageLoadEnd  }) => {
 
   const setSelected = useStore((s) => s.setSelected) 
 
-  // console.log("adsfasf", item)
+  useEffect(()=>{       
+    let exists = likedBooks.some(itemL => itemL.title === item.title)
+    setLiked(exists)
+  }, [likedBooks])
 
   const handleLike = async (item, bool) => { 
     if (bool) addLikedStory(item)
@@ -57,8 +62,8 @@ const ItemGrid = ({ item, onImageLoadEnd  }) => {
   borderBottomColor: '#eee', paddingBottom: 5}: {}]}>
             <Image
               source={{
-                uri: item.cover
-                  ? `https://covers.openlibrary.org/b/olid/${item.cover}-M.jpg`
+                uri: item.cover ?
+                typeof(item.cover)=="number"?  `https://covers.openlibrary.org/b/id/${item.cover}-M.jpg` : `https://covers.openlibrary.org/b/olid/${item.cover}-M.jpg`
                   : 'https://placehold.co/60x90.png',
               }}
               onLoadEnd={onImageLoadEnd}
@@ -82,7 +87,7 @@ const ItemGrid = ({ item, onImageLoadEnd  }) => {
             <View>
             <Text 
               style={styles.title}
-              numberOfLines = {2}
+              numberOfLines={2}
             >{item.title}</Text>
           </View>
           </View>
@@ -110,6 +115,7 @@ const styles = StyleSheet.create({
     fontSize: 23,
     alignItems: 'center',
     margin: 10,
+    flexShrink: 1,
     color: 'black'
   },
   btnContainer: {

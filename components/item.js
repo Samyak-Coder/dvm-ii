@@ -24,10 +24,15 @@ const Item = ({ item, onImageLoadEnd }) => {
 
   const setSelected = useStore((s) => s.setSelected) 
 
-  useEffect(()=>{
-    let books = likedBooks.find(lbook => lbook.key === item.key)
-    if(books) setLiked(true)
-  })
+  // useEffect(()=>{
+  //   let books = likedBooks.find(lbook => lbook.key === item.key)
+  //   if(books) setLiked(true)
+  // })
+
+  useEffect(()=>{       
+    let exists = likedBooks.some(itemL => itemL.title === item.title)
+    setLiked(exists)
+  }, [likedBooks])
 
   const handleLike = async (item, bool) => { 
     if (bool) addLikedStory(item)
